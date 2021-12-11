@@ -1,10 +1,11 @@
-# fxhash + shadow-cljs + quil quickstart
+# intersections
 
 A light `shadow-cljs` template to create generative art with [quil](http://quil.info/) for the [fxhash](https://www.fxhash.xyz/) platform. 
 
 You'll need `Java`, `node` and `npm` installed (`yarn` also works). 
 
-<img width="1175" alt="Screen Shot 2021-11-16 at 1 56 30 pm" src="https://user-images.githubusercontent.com/5009316/141897043-5bad64cb-a11a-42ae-b519-132a74e3a4ba.png">
+![image](https://user-images.githubusercontent.com/5009316/145669331-9a6c325d-610a-4ffb-9ac0-f9e8de8cdfe5.png)
+
 
 # Setup + Development
 
