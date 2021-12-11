@@ -124,25 +124,49 @@
 
 (def PI (.-PI js/Math))
 
+(defn rand-index [lst]
+  (q/floor (* (f/fx-rand) (count lst))))
 
 (defn choose [from]
-  (get from (q/floor (* (f/fx-rand) (count from)))))
+  (get from (rand-index from)))
+
+(defn rand-range [min max]
+  (+ min (* (- max min) (f/fx-rand))))
+
+(def factorial (reductions * 1 (drop 1 (range))))
+
+(defn factoradic [n] {:pre [(>= n 0)]}
+  (loop [a (list 0) n n p 2]
+    (if (zero? n) a (recur (conj a (mod n p)) (quot n p) (inc p)))))
+
+(defn nth-permutation [s n] {:pre [(< n (nth factorial (count s)))]}
+  (let [d (factoradic n)
+        choices (concat (repeat (- (count s) (count d)) 0) d)]
+    ((reduce
+      (fn [m i]
+        (let [[left [item & right]] (split-at i (m :rem))]
+          (assoc m :rem (concat left right)
+                 :acc (conj (m :acc) item))))
+      {:rem s :acc []} choices) :acc)))
 
 (defn setup []
   ;; EXAMPLE CODE, DO NOT HARDCODE YOUR FEATURES
-  (f/register-features {:dark true :another-feature "yes"})
 
   (q/frame-rate 30)
 
   ; setup function returns initial state
-  {:t 0
-   :alpha (f/fx-rand)
-   :beta (f/fx-rand)
-   :gamma (f/fx-rand)
-   :pal (shuffle (choose palettes))})
+  (let [pal-index (rand-index palettes)
+        s {:t 0
+           :alpha (f/fx-rand)
+           :beta (f/fx-rand)
+           :gamma (f/fx-rand)
+           :pal-index pal-index
+           :pal (nth-permutation (get palettes pal-index) (q/round (* 10000 (f/fx-rand))))}]
 
-(defn rand-range [min max]
-  (+ min (* (- max min) (f/fx-rand))))
+    (f/register-features {:lonely (< (:beta s) 0.2) :palette pal-index})
+    s))
+
+
 
 (defn draw-state [{:keys [t alpha beta gamma pal]}]
   (let [t' (/ t 10)
